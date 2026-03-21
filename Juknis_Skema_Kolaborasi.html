@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Juknis – Skema Kolaborasi</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; color: #1a1a2e; background: #f5f6fa; line-height: 1.7; }
+
+  /* Cover */
+  .cover { background: linear-gradient(135deg, #0a0e1a 0%, #1a2235 60%, #0d3b2e 100%); color: #fff; padding: 60px 80px; min-height: 280px; display: flex; flex-direction: column; justify-content: center; }
+  .cover-badge { display: inline-block; background: #00d4aa; color: #000; font-size: 10px; font-weight: 800; padding: 3px 10px; border-radius: 4px; margin-bottom: 16px; letter-spacing: 1px; text-transform: uppercase; }
+  .cover h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+  .cover h2 { font-size: 16px; font-weight: 400; color: #8fa3c0; margin-bottom: 24px; }
+  .cover-meta { display: flex; gap: 40px; margin-top: 20px; }
+  .cover-meta-item label { font-size: 10px; color: #546880; text-transform: uppercase; letter-spacing: .8px; display: block; }
+  .cover-meta-item span { font-size: 13px; color: #e8f0fe; font-weight: 600; }
+
+  /* Layout */
+  .container { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+  
+  /* TOC */
+  .toc { background: #fff; border: 1px solid #e0e4f0; border-radius: 12px; padding: 24px 28px; margin-bottom: 32px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+  .toc h3 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .8px; color: #546880; margin-bottom: 14px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin-bottom: 5px; }
+  .toc a { color: #0d3b2e; text-decoration: none; font-weight: 600; font-size: 13px; }
+  .toc a:hover { color: #00a884; text-decoration: underline; }
+  .toc .sub { font-size: 12px; color: #546880; font-weight: 400; margin-left: 8px; }
+
+  /* Sections */
+  .section { background: #fff; border: 1px solid #e0e4f0; border-radius: 12px; padding: 28px 32px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,.06); page-break-inside: avoid; }
+  .section-num { font-size: 10px; font-weight: 800; color: #00a884; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .section h2 { font-size: 18px; font-weight: 800; color: #0a0e1a; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid #f0f2fa; }
+  .section h3 { font-size: 14px; font-weight: 700; color: #1a2235; margin: 20px 0 8px; }
+  .section h4 { font-size: 13px; font-weight: 700; color: #2d3d5a; margin: 14px 0 6px; }
+  .section p { margin-bottom: 10px; color: #2d3d5a; }
+
+  /* Lists */
+  ul.std, ol.std { padding-left: 22px; margin-bottom: 12px; }
+  ul.std li, ol.std li { margin-bottom: 6px; color: #2d3d5a; }
+
+  /* Info boxes */
+  .box { border-radius: 8px; padding: 14px 16px; margin: 14px 0; font-size: 12.5px; }
+  .box-info  { background: #e8f4fd; border-left: 4px solid #2196f3; }
+  .box-tip   { background: #e8f9f4; border-left: 4px solid #00a884; }
+  .box-warn  { background: #fff8e1; border-left: 4px solid #f59e0b; }
+  .box-danger{ background: #fde8e8; border-left: 4px solid #ef4444; }
+  .box strong { font-weight: 800; display: block; margin-bottom: 4px; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 12px; }
+  th { background: #1a2235; color: #e8f0fe; padding: 9px 12px; text-align: left; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+  td { padding: 8px 12px; border-bottom: 1px solid #e8eaf6; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f9ff; }
+  td strong { color: #0a0e1a; }
+
+  /* Step cards */
+  .steps { display: flex; flex-direction: column; gap: 12px; margin: 14px 0; }
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+  .step-num { width: 28px; height: 28px; background: #00d4aa; color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; margin-top: 2px; }
+  .step-body h4 { font-size: 13px; font-weight: 700; margin-bottom: 3px; color: #0a0e1a; }
+  .step-body p { font-size: 12px; color: #546880; margin: 0; }
+
+  /* Badge */
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; }
+  .badge-green  { background: rgba(34,197,94,.15); color: #16a34a; border: 1px solid #86efac; }
+  .badge-blue   { background: rgba(59,130,246,.15); color: #2563eb; border: 1px solid #93c5fd; }
+  .badge-orange { background: rgba(245,158,11,.15); color: #d97706; border: 1px solid #fcd34d; }
+  .badge-red    { background: rgba(239,68,68,.15);  color: #dc2626; border: 1px solid #fca5a5; }
+
+  /* Code-like */
+  .mono { font-family: 'Consolas', 'Courier New', monospace; background: #f0f2fa; padding: 2px 6px; border-radius: 4px; font-size: 11.5px; color: #c0392b; }
+  .code-block { background: #1a2235; color: #e8f0fe; border-radius: 8px; padding: 14px 16px; font-family: 'Consolas', monospace; font-size: 12px; margin: 12px 0; overflow-x: auto; line-height: 1.6; }
+  .code-block .cm { color: #546880; }
+  .code-block .kw { color: #00d4aa; }
+  .code-block .str{ color: #fbbf24; }
+
+  /* Flow diagram */
+  .flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 12px 0; }
+  .flow-step { background: #e8f4fd; border: 1px solid #93c5fd; border-radius: 6px; padding: 6px 12px; font-size: 12px; font-weight: 600; color: #1e40af; }
+  .flow-arrow { color: #94a3b8; font-size: 16px; }
+
+  /* Footer */
+  .footer { text-align: center; padding: 32px; color: #94a3b8; font-size: 11px; }
+
+  /* Print */
+  @media print {
+    body { background: #fff; font-size: 12px; }
+    .cover { padding: 40px 60px; }
+    .section { box-shadow: none; border: 1px solid #ddd; }
+    .container { padding: 16px; }
+    a { color: inherit !important; text-decoration: none !important; }
+    .toc a { color: #000 !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-badge">Petunjuk Teknis</div>
+  <h1>Skema Kolaborasi</h1>
+  <h2>Aplikasi Pemetaan & Analisis Kolaborasi Multi-Stakeholder</h2>
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <label>Pengembang</label>
+      <span>Frans Waas</span>
+    </div>
+    <div class="cover-meta-item">
+      <label>Versi</label>
+      <span>2.0</span>
+    </div>
+    <div class="cover-meta-item">
+      <label>Tahun</label>
+      <span>2026</span>
+    </div>
+    <div class="cover-meta-item">
+      <label>Platform</label>
+      <span>Web (HTML5 — Offline)</span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>📋 Daftar Isi</h3>
+    <ol class="std">
+      <li><a href="#s1">Pendahuluan & Tujuan Aplikasi</a></li>
+      <li><a href="#s2">Cara Menjalankan Aplikasi</a></li>
+      <li><a href="#s3">Antarmuka & Navigasi</a></li>
+      <li><a href="#s4">Panduan Penggunaan Fitur Utama</a>
+        <span class="sub">SH · Aliran · Grup · Template · Fase</span>
+      </li>
+      <li><a href="#s5">Sistem Validasi & Rasio</a></li>
+      <li><a href="#s6">Ekspor & Simpan Proyek</a></li>
+      <li><a href="#s7">Pemilihan Icon</a></li>
+      <li><a href="#s8">Analisis & Panel Kanan</a></li>
+      <li><a href="#s9">Berbagi dengan Orang Lain</a></li>
+      <li><a href="#s10">Pengembangan Lanjutan</a></li>
+      <li><a href="#s11">Troubleshooting</a></li>
+      <li><a href="#s12">Daftar Fitur Lengkap</a></li>
+    </ol>
+  </div>
+
+  <!-- S1 -->
+  <div class="section" id="s1">
+    <div class="section-num">Bagian 1</div>
+    <h2>Pendahuluan & Tujuan Aplikasi</h2>
+    <p><strong>Skema Kolaborasi</strong> adalah aplikasi berbasis web yang dirancang untuk membantu peneliti, akademisi, perencana kota, dan praktisi pembangunan dalam <em>memetakan, menganalisis, dan memvisualisasikan</em> hubungan kolaboratif antar-stakeholder dalam suatu proyek atau program.</p>
+
+    <h3>Tujuan Utama</h3>
+    <ul class="std">
+      <li>Memetakan stakeholder (SH) beserta peran, kontribusi, dan manfaat yang diterima masing-masing pihak</li>
+      <li>Menggambarkan aliran sumber daya (finansial, tangible, intangible, barang publik, eksternalitas) antar-stakeholder</li>
+      <li>Memvalidasi keseimbangan dan keadilan kolaborasi melalui sistem rasio nilai</li>
+      <li>Menganalisis dinamika kolaborasi per fase (Pra-Kolaborasi, Operasi, Pasca)</li>
+      <li>Menghasilkan laporan visual dan data terstruktur untuk keperluan penelitian</li>
+    </ul>
+
+    <h3>Konsep Dasar: SHP dan SHF</h3>
+    <table>
+      <tr><th>Istilah</th><th>Kepanjangan</th><th>Penjelasan</th><th>Posisi di Kanvas</th></tr>
+      <tr><td><strong>SHP</strong></td><td>Stakeholder Pengelola</td><td>Pihak utama yang mengelola/mengoperasikan program, memiliki kendali langsung atas keputusan</td><td>Di dalam kotak biru</td></tr>
+      <tr><td><strong>SHF</strong></td><td>Stakeholder Fasilitator</td><td>Pihak pendukung yang menyediakan sumber daya, layanan, atau regulasi; tidak selalu terlibat langsung</td><td>Di luar kotak, bebas</td></tr>
+    </table>
+
+    <h3>Jenis Aliran Sumber Daya</h3>
+    <table>
+      <tr><th>Jenis</th><th>Warna</th><th>Contoh</th></tr>
+      <tr><td><span class="badge badge-green">Finansial</span></td><td>Hijau ——</td><td>Dana hibah, kredit, cicilan, pajak, retribusi</td></tr>
+      <tr><td><span class="badge badge-blue">Non-Fin Tangible</span></td><td>Biru ——</td><td>Lahan, peralatan, bahan baku, infrastruktur fisik</td></tr>
+      <tr><td><span class="badge badge-orange">Non-Fin Intangible</span></td><td>Oranye ——</td><td>Pelatihan, regulasi, izin, pengetahuan, branding</td></tr>
+      <tr><td>Barang Publik</td><td>Ungu - - -</td><td>Layanan publik, manfaat bersama, dampak sosial positif</td></tr>
+      <tr><td><span class="badge badge-red">Eksternalitas</span></td><td>Merah ····</td><td>Polusi, gentrifikasi, dampak negatif tidak langsung</td></tr>
+    </table>
+  </div>
+
+  <!-- S2 -->
+  <div class="section" id="s2">
+    <div class="section-num">Bagian 2</div>
+    <h2>Cara Menjalankan Aplikasi</h2>
+
+    <div class="box box-tip">
+      <strong>✅ Tidak perlu instalasi apapun!</strong>
+      Aplikasi ini berjalan sepenuhnya di browser — cukup buka file HTML. Tidak memerlukan internet, server, atau software tambahan.
+    </div>
+
+    <h3>Persyaratan Sistem</h3>
+    <table>
+      <tr><th>Komponen</th><th>Minimum</th><th>Rekomendasi</th></tr>
+      <tr><td>Browser</td><td>Chrome 90+, Firefox 88+, Edge 90+</td><td>Google Chrome versi terbaru</td></tr>
+      <tr><td>Sistem Operasi</td><td>Windows 7, macOS 10.13, Linux</td><td>Windows 10/11 atau macOS Ventura</td></tr>
+      <tr><td>RAM</td><td>4 GB</td><td>8 GB atau lebih</td></tr>
+      <tr><td>Resolusi Layar</td><td>1280 × 720</td><td>1920 × 1080 atau lebih</td></tr>
+      <tr><td>Internet</td><td colspan="2">Tidak diperlukan (100% offline)</td></tr>
+    </table>
+
+    <h3>Langkah Menjalankan</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Unduh file aplikasi</h4>
+          <p>Pastikan file <span class="mono">skema-kolaborasi.html</span> sudah tersimpan di komputer Anda.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Buka dengan browser</h4>
+          <p>Klik dua kali pada file tersebut, atau klik kanan → <em>Open with</em> → pilih Google Chrome / Firefox / Edge.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Aplikasi langsung siap digunakan</h4>
+          <p>Tidak ada loading server, tidak perlu login. Kanvas kosong langsung muncul.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>Cara Berbagi ke Orang Lain</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Kirim file HTML-nya</h4>
+          <p>Cukup kirim file <span class="mono">skema-kolaborasi.html</span> via email, WhatsApp, Google Drive, USB, atau media apapun. Penerima cukup membuka file tersebut — tidak perlu instalasi.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Kirim juga file proyek (.json) jika ingin melanjutkan skema</h4>
+          <p>Jika ingin berbagi skema yang sudah dibuat, simpan dulu proyek (tombol 💾 Simpan) lalu kirim file <span class="mono">.json</span> hasilnya bersama file HTML. Penerima membuka file HTML dulu, lalu klik 📂 Buka untuk memuat file .json.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box box-info">
+      <strong>ℹ Hosting di web (opsional)</strong>
+      Jika ingin diakses dari browser tanpa mengirim file, aplikasi dapat diunggah ke layanan hosting statis gratis seperti GitHub Pages, Netlify, atau Vercel. Cukup unggah satu file HTML — tidak ada backend atau database yang diperlukan.
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="section" id="s3">
+    <div class="section-num">Bagian 3</div>
+    <h2>Antarmuka & Navigasi</h2>
+
+    <h3>Tata Letak Aplikasi</h3>
+    <table>
+      <tr><th>Area</th><th>Fungsi</th></tr>
+      <tr><td><strong>Header (atas)</strong></td><td>Logo, tombol fase (Pra / Operasi / Pasca), indikator simpan, bahasa, dan tombol aksi utama (Baru · Buka · Simpan · Export)</td></tr>
+      <tr><td><strong>Panel Kiri</strong></td><td>Daftar stakeholder, aliran, grup, dan template. Tab: SH · Aliran · Grup · Template</td></tr>
+      <tr><td><strong>Kanvas Tengah</strong></td><td>Area utama untuk menggambar dan mengatur node stakeholder dan panah aliran</td></tr>
+      <tr><td><strong>Panel Kanan</strong></td><td>Analisis dan detail: 📊 Info · 💰 Nilai · 📈 Chart · 🎲 Skenario · 📅 Waktu · ✅ Valid</td></tr>
+    </table>
+
+    <h3>Toolbar Kanvas</h3>
+    <table>
+      <tr><th>Tombol</th><th>Shortcut</th><th>Fungsi</th></tr>
+      <tr><td>↖ Pilih</td><td><span class="mono">V</span></td><td>Mode seleksi — klik node untuk memilih, drag untuk memindah</td></tr>
+      <tr><td>↔ Hubungkan</td><td><span class="mono">C</span></td><td>Mode koneksi — klik node sumber lalu node tujuan untuk membuat aliran</td></tr>
+      <tr><td>✋ Pan</td><td><span class="mono">Space</span> tahan</td><td>Mode geser kanvas</td></tr>
+      <tr><td>✨ Auto Layout</td><td>—</td><td>Susun ulang posisi node secara otomatis (force-directed)</td></tr>
+      <tr><td>⊞ Fit View</td><td><span class="mono">F</span></td><td>Sesuaikan tampilan agar semua node terlihat</td></tr>
+      <tr><td>+ / −</td><td><span class="mono">Scroll</span></td><td>Zoom in / zoom out</td></tr>
+      <tr><td>🗑 Hapus</td><td><span class="mono">Del</span></td><td>Hapus node atau aliran yang dipilih</td></tr>
+      <tr><td><span class="mono">Esc</span></td><td>—</td><td>Batalkan mode koneksi, batal pilih</td></tr>
+    </table>
+  </div>
+
+  <!-- S4 -->
+  <div class="section" id="s4">
+    <div class="section-num">Bagian 4</div>
+    <h2>Panduan Penggunaan Fitur Utama</h2>
+
+    <h3>4.1 Menambah Stakeholder</h3>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Klik "+ Tambah Stakeholder"</h4><p>Di panel kiri, tab SH → klik tombol di bagian bawah.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Isi form</h4><p><strong>Nama</strong> — nama institusi/pihak. <strong>Icon</strong> — pilih emoji atau upload gambar. <strong>Tipe</strong> — Pemerintah / Swasta / NGO / Akademisi / Komunitas / Masyarakat. <strong>Peran</strong> — SHP (dalam kotak) atau SHF (luar kotak).</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Isi nilai kontribusi (Rp)</h4><p>Nilai ini digunakan untuk menghitung proporsi dan rasio validasi. Proporsi dihitung otomatis.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Tentukan fase aktif</h4><p>Centang Pra / Operasi / Pasca sesuai kapan stakeholder tersebut terlibat.</p></div></div>
+      <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Klik Simpan</h4><p>Node muncul di kanvas. Posisi bisa digeser dengan drag.</p></div></div>
+    </div>
+
+    <h3>4.2 Menambah Aliran Sumber Daya</h3>
+    <p>Ada dua cara membuat aliran:</p>
+    <p><strong>Cara 1 — Tombol Hubungkan di node:</strong> Klik node → klik tombol "↔ Hubungkan" di bawah node → klik node tujuan → isi form aliran.</p>
+    <p><strong>Cara 2 — Mode Connect:</strong> Tekan <span class="mono">C</span> atau klik ↔ di toolbar → klik node sumber → klik node tujuan → isi form aliran.</p>
+    
+    <div class="box box-tip">
+      <strong>💡 Tip aliran dua arah</strong>
+      Di form aliran, pilih <em>Arah: Dua Arah (⟺)</em> untuk menggambarkan pertukaran yang saling menguntungkan. Panah akan muncul di kedua ujung.
+    </div>
+
+    <h3>4.3 Menggunakan Template</h3>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Buka tab Template</h4><p>Di panel kiri, klik tab "Template".</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Pilih skala & template</h4><p>Template tersedia dalam 4 skala: 🟢 Kecil (2-4 SH), 🟡 Menengah (5-8 SH), 🔴 Besar (8-12 SH), 🟣 Sangat Besar (12+ SH).</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Klik "Muat Template"</h4><p>Skema siap dengan node, aliran, dan nilai yang sudah terisi. Bisa langsung diedit.</p></div></div>
+    </div>
+
+    <h3>4.4 Template yang Tersedia (12 Template)</h3>
+    <table>
+      <tr><th>Skala</th><th>Nama Template</th><th>Jumlah SH</th></tr>
+      <tr><td rowspan="3"><span class="badge badge-green">Kecil</span></td><td>Usaha Mikro & Pembina</td><td>3 SH</td></tr>
+      <tr><td>Petani & Tengkulak Koperatif</td><td>3 SH</td></tr>
+      <tr><td>CSR Perusahaan & Komunitas</td><td>4 SH</td></tr>
+      <tr><td rowspan="4"><span class="badge badge-orange">Menengah</span></td><td>Sentra Industri Batik</td><td>6 SH</td></tr>
+      <tr><td>Pariwisata Berbasis Komunitas</td><td>6 SH</td></tr>
+      <tr><td>Kolaborasi Riset Kampus-Industri</td><td>6 SH</td></tr>
+      <tr><td>Pengelolaan Sampah Terpadu</td><td>6 SH</td></tr>
+      <tr><td rowspan="3"><span class="badge badge-red">Besar</span></td><td>KPBU/PPP Infrastruktur</td><td>6 SH</td></tr>
+      <tr><td>Value Chain Komoditas Pertanian</td><td>10 SH</td></tr>
+      <tr><td>Ekosistem Start-up Daerah</td><td>8 SH</td></tr>
+      <tr><td rowspan="2"><span class="badge badge-blue">Sangat Besar</span></td><td>Kawasan Industri Terpadu</td><td>12 SH</td></tr>
+      <tr><td>Pengembangan Wilayah Terpadu</td><td>12 SH</td></tr>
+    </table>
+
+    <h3>4.5 Fase Kolaborasi</h3>
+    <table>
+      <tr><th>Fase</th><th>Keterangan</th></tr>
+      <tr><td><strong>Pra-Kolaborasi</strong></td><td>Tahap awal: penjajakan, MoU, persiapan sumber daya, penetapan peran. Aliran umumnya berupa izin, kontrak awal, dan hibah persiapan.</td></tr>
+      <tr><td><strong>Operasi</strong></td><td>Fase aktif: semua SH berkontribusi dan menerima manfaat. Transaksi berjalan penuh, monitoring aliran, implementasi program.</td></tr>
+      <tr><td><strong>Pasca</strong></td><td>Evaluasi, distribusi keuntungan akhir, laporan dampak, dan keputusan keberlanjutan kolaborasi.</td></tr>
+    </table>
+    <div class="box box-info">
+      <strong>ℹ Node redup</strong>
+      Node yang tampak redup (transparan) di suatu fase berarti stakeholder tersebut tidak aktif di fase itu. Aliran juga hanya tampil sesuai fase yang dipilih.
+    </div>
+
+    <h3>4.6 Grup / Layer</h3>
+    <p>Grup memungkinkan pengelompokan beberapa SH dalam satu kotak visual. Berguna untuk menandai sektor (Sektor Publik, Sektor Swasta, dll.) atau lokasi geografis. Buat grup melalui tab Grup di panel kiri.</p>
+
+    <h3>4.7 Auto-Layout</h3>
+    <p>Tersedia 4 pilihan layout otomatis di tab Grup:</p>
+    <ul class="std">
+      <li><strong>⭕ Lingkaran</strong> — node disusun melingkar, cocok untuk jaringan yang setara</li>
+      <li><strong>🏛 Hierarki</strong> — susunan bertingkat dari atas ke bawah</li>
+      <li><strong>✨ Force</strong> — simulasi gaya tarik-tolak, cocok untuk jaringan kompleks</li>
+      <li><strong>⊞ Grid</strong> — susunan kotak rapi baris-kolom</li>
+    </ul>
+  </div>
+
+  <!-- S5 -->
+  <div class="section" id="s5">
+    <div class="section-num">Bagian 5</div>
+    <h2>Sistem Validasi & Rasio</h2>
+
+    <p>Validasi berjalan <strong>otomatis</strong> setiap kali ada perubahan pada skema — tambah/hapus node, ubah nilai, ganti fase, dsb. Badge di bagian bawah kanvas menunjukkan status terkini:</p>
+    <ul class="std">
+      <li>✅ <strong>Skema Valid</strong> — semua kaidah terpenuhi</li>
+      <li>⚠ <strong>N peringatan</strong> — ada kondisi yang perlu diperhatikan</li>
+      <li>❌ <strong>N error</strong> — ada pelanggaran kaidah yang perlu diperbaiki</li>
+    </ul>
+    <p>Klik badge untuk membuka detail di tab <strong>✅ Valid</strong> pada panel kanan.</p>
+    <div class="box box-info">
+      <strong>ℹ Validasi tidak memblokir</strong>
+      Skema tetap bisa disimpan dan diekspor meski ada error. Validasi bersifat informatif dan edukatif, bukan pembatas.
+    </div>
+
+    <h3>5.1 Alur Kerja Validasi</h3>
+    <p>Setiap kali skema berubah, sistem menjalankan dua fungsi secara otomatis:</p>
+    <ul class="std">
+      <li><span class="mono">getIssues()</span> — menghasilkan daftar error &amp; warning yang ditampilkan sebagai badge</li>
+      <li><span class="mono">getChecks()</span> — mengecek 8 kaidah kolaborasi yang tampil sebagai checklist di tab Validasi</li>
+    </ul>
+
+    <h3>5.2 Kondisi yang Menghasilkan ERROR (❌)</h3>
+
+    <h4>Error 1 — Node Tidak Terhubung</h4>
+    <p>Setiap stakeholder wajib memiliki minimal satu aliran masuk atau keluar. Jika ada node yang sama sekali tidak terhubung ke node lain, sistem menandainya sebagai error.</p>
+    <div class="box box-tip"><strong>💡 Solusi</strong> Tambahkan aliran dari/ke node tersebut, atau hapus node jika tidak relevan.</div>
+
+    <h4>Error 2 — Rasio Nilai &lt; 1</h4>
+    <p>Sistem menghitung rasio keseimbangan nilai setiap stakeholder:</p>
+    <div class="code-block"><span class="kw">Rasio</span> = Nilai Masuk ÷ Nilai Keluar</div>
+    <p>Jika rasio &lt; 1, berarti stakeholder mengeluarkan sumber daya lebih banyak dari yang diterima — kolaborasi dianggap tidak adil/tidak seimbang.</p>
+    <ul class="std">
+      <li>Aliran bertipe <strong>Eksternalitas</strong> tidak dihitung dalam rasio (dihitung terpisah sebagai beban tambahan)</li>
+      <li>Rasio hanya dihitung jika ada aliran dengan nilai Rp &gt; 0</li>
+      <li>Jika stakeholder hanya menerima atau hanya memberi (outV = 0), rasio dianggap N/A — tidak error</li>
+    </ul>
+    <div class="box box-tip"><strong>💡 Solusi</strong> Tambahkan aliran masuk yang realistis: pajak, retribusi, return investasi, atau manfaat intangible dengan nilai estimasi.</div>
+
+    <p><strong>Pengecualian — tidak dicek rasionya:</strong></p>
+    <table>
+      <tr><th>Tipe Stakeholder</th><th>Alasan Pengecualian</th></tr>
+      <tr><td><strong>Pemerintah</strong></td><td>Secara konseptual memberi lebih banyak; manfaat diterima melalui PAD, legitimasi kebijakan, dan kesejahteraan daerah jangka panjang</td></tr>
+      <tr><td><strong>Masyarakat / Publik</strong></td><td>Penerima manfaat sosial, bukan entitas bisnis yang harus untung secara finansial langsung</td></tr>
+    </table>
+
+    <h3>5.3 Kondisi yang Menghasilkan WARNING (⚠)</h3>
+
+    <h4>Warning 1 — Proporsi Sharing ≠ 100%</h4>
+    <p>Total proporsi kontribusi semua stakeholder harus tepat 100%. Proporsi dihitung otomatis dari nilai Rp masing-masing SH. Toleransi <strong>±0.01%</strong> diterapkan untuk menghindari false warning akibat floating point.</p>
+    <div class="box box-tip"><strong>💡 Solusi</strong> Pastikan semua stakeholder sudah diisi nilai Rp-nya agar proporsi terhitung otomatis dengan benar.</div>
+
+    <h4>Warning 2 — Aliran Barang Publik tanpa Node Masyarakat</h4>
+    <p>Jika ada aliran bertipe Barang Publik tetapi tidak ada stakeholder bertipe Masyarakat/Publik, sistem memperingatkan bahwa penerima manfaat publik belum terdefinisi.</p>
+    <div class="box box-tip"><strong>💡 Solusi</strong> Tambahkan node stakeholder bertipe Masyarakat/Publik sebagai penerima aliran tersebut.</div>
+
+    <h3>5.4 Checklist 8 Kaidah Kolaborasi</h3>
+    <p>Ditampilkan di tab <strong>✅ Valid</strong> dengan status ✅ / ⚠ / ❌:</p>
+    <table>
+      <tr><th>#</th><th>Kaidah</th><th>Logika Pengecekan</th></tr>
+      <tr><td>1</td><td><strong>Ada SHP</strong></td><td>Minimal 1 node dengan peran SHP</td></tr>
+      <tr><td>2</td><td><strong>Ada SHF</strong></td><td>Minimal 1 node dengan peran SHF</td></tr>
+      <tr><td>3</td><td><strong>Semua SH terhubung</strong></td><td>Setiap node punya minimal 1 aliran (masuk atau keluar)</td></tr>
+      <tr><td>4</td><td><strong>Aliran tertutup</strong></td><td>Setiap SHP punya aliran keluar DAN aliran masuk</td></tr>
+      <tr><td>5</td><td><strong>Label aliran terisi</strong></td><td>Semua panah aliran memiliki label tidak kosong</td></tr>
+      <tr><td>6</td><td><strong>Nilai diterima ≥ dikeluarkan</strong></td><td>Rasio ≥ 1 untuk semua SH non-exempt (pemerintah &amp; publik dikecualikan)</td></tr>
+      <tr><td>7</td><td><strong>Proporsi sharing = 100%</strong></td><td>Total proporsi kontribusi semua SH = 100% (±0.01%)</td></tr>
+      <tr><td>8</td><td><strong>Fase kolaborasi terdefinisi</strong></td><td>Setiap SH aktif di minimal 1 fase (Pra/Operasi/Pasca)</td></tr>
+    </table>
+
+    <h3>5.5 Perbedaan ERROR vs WARNING</h3>
+    <table>
+      <tr><th>Aspek</th><th>Error (❌)</th><th>Warning (⚠)</th></tr>
+      <tr><td>Warna badge</td><td>Merah</td><td>Kuning</td></tr>
+      <tr><td>Contoh</td><td>Node tidak terhubung, Rasio &lt; 1</td><td>Proporsi ≠ 100%, Tidak ada node Publik</td></tr>
+      <tr><td>Blokir aksi?</td><td><strong>Tidak</strong></td><td><strong>Tidak</strong></td></tr>
+      <tr><td>Perlu diperbaiki?</td><td>Sangat disarankan</td><td>Situasional</td></tr>
+    </table>
+
+    <h3>5.6 Cara Membaca Detail Validasi</h3>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Klik badge error/warning</h4><p>Badge merah/kuning di bawah kanvas — klik untuk membuka panel detail.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Panel kanan beralih ke tab ✅ Valid</h4><p>Bagian <strong>Error & Peringatan</strong> menampilkan nama stakeholder bermasalah, nilai rasio aktual, dan saran perbaikan spesifik.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Baca Checklist Kaidah</h4><p>Di bawahnya, checklist 8 kaidah menampilkan status masing-masing secara ringkas.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Perbaiki sesuai saran</h4><p>Tambah aliran, sesuaikan nilai, atau hubungkan node sesuai petunjuk. Validasi otomatis diperbarui.</p></div></div>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="section" id="s6">
+    <div class="section-num">Bagian 6</div>
+    <h2>Ekspor & Simpan Proyek</h2>
+
+    <h3>Menyimpan Proyek (💾 Simpan)</h3>
+    <p>Klik tombol <strong>💾 Simpan</strong> di header. File <span class="mono">.json</span> akan terunduh ke folder Downloads. File ini berisi seluruh data proyek dan bisa dibuka kembali dengan tombol 📂 Buka.</p>
+    <div class="box box-warn">
+      <strong>⚠ Simpan manual</strong>
+      Tidak ada autosave — pastikan klik 💾 Simpan secara berkala agar data tidak hilang jika browser ditutup.
+    </div>
+
+    <h3>Membuka Proyek (📂 Buka)</h3>
+    <p>Klik <strong>📂 Buka</strong> → pilih file <span class="mono">.json</span> → skema otomatis dimuat ke kanvas.</p>
+
+    <h3>Ekspor (⬇ Export)</h3>
+    <table>
+      <tr><th>Format</th><th>Keterangan</th><th>Kapan digunakan</th></tr>
+      <tr><td><strong>JSON</strong></td><td>Data proyek lengkap (bisa diedit kembali)</td><td>Backup / berbagi proyek untuk dilanjutkan</td></tr>
+      <tr><td><strong>PNG</strong></td><td>Gambar resolusi tinggi 2× (seluruh kanvas)</td><td>Presentasi, laporan, publikasi</td></tr>
+      <tr><td><strong>JPEG</strong></td><td>Gambar kompres (kualitas 92%)</td><td>Berbagi cepat, ukuran file lebih kecil</td></tr>
+      <tr><td><strong>Laporan HTML</strong></td><td>Laporan ringkas dengan tabel SH, aliran, dan validasi</td><td>Dokumentasi penelitian</td></tr>
+    </table>
+
+    <div class="box box-tip">
+      <strong>✅ Export gambar mencakup semua node</strong>
+      Gambar yang diekspor akan mencakup <em>seluruh</em> node di kanvas — tidak terpotong oleh tampilan layar. Resolusi output ditampilkan di notifikasi setelah berhasil.
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="section" id="s7">
+    <div class="section-num">Bagian 7</div>
+    <h2>Pemilihan Icon Stakeholder</h2>
+
+    <p>Saat menambah atau mengedit stakeholder, klik area Icon untuk membuka panel pemilihan icon.</p>
+
+    <h3>Kategori Emoji</h3>
+    <table>
+      <tr><th>Tab</th><th>Isi</th></tr>
+      <tr><td>🏛 Gov</td><td>Ikon pemerintahan, gedung, regulasi, lembaga resmi</td></tr>
+      <tr><td>🏢 Bisnis</td><td>Ikon korporat, keuangan, dokumen, teknologi</td></tr>
+      <tr><td>🤝 Sosial</td><td>Ikon komunitas, lingkungan, masyarakat</td></tr>
+      <tr><td>🎓 Edu</td><td>Ikon pendidikan, riset, sains, akademisi</td></tr>
+      <tr><td>🏗 Infra</td><td>Ikon infrastruktur, transportasi, utilitas, konstruksi</td></tr>
+    </table>
+
+    <h3>Upload Gambar dari Laptop</h3>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Klik tab 📁 Upload</h4><p>Di panel icon picker, klik tab Upload.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Klik area upload</h4><p>Browser akan membuka jendela pemilihan file.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Pilih gambar</h4><p>Format yang didukung: PNG, JPG, SVG, WebP, GIF. Ukuran maksimal: 500 KB.</p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Gambar otomatis diterapkan</h4><p>Preview muncul. Gambar tersimpan di dalam data proyek (base64) — tidak perlu file eksternal.</p></div></div>
+    </div>
+
+    <div class="box box-info">
+      <strong>ℹ Gambar tersimpan di dalam proyek</strong>
+      Gambar yang diunggah disimpan sebagai data base64 di dalam file <span class="mono">.json</span> — sehingga icon tetap tampil meski file dipindahkan ke komputer lain.
+    </div>
+  </div>
+
+  <!-- S8 -->
+  <div class="section" id="s8">
+    <div class="section-num">Bagian 8</div>
+    <h2>Analisis & Panel Kanan</h2>
+
+    <table>
+      <tr><th>Tab</th><th>Isi</th></tr>
+      <tr><td><strong>📊 Info (Overview)</strong></td><td>Ringkasan proyek: nama, jumlah SH, jumlah aliran, total nilai, distribusi tipe stakeholder</td></tr>
+      <tr><td><strong>💰 Nilai (Valuasi)</strong></td><td>Net value per stakeholder: nilai masuk, keluar, eksternalitas, dan rasio. Warna merah = rasio &lt; 1</td></tr>
+      <tr><td><strong>📈 Chart</strong></td><td>Grafik pie distribusi kontribusi dan bar chart nilai per SH</td></tr>
+      <tr><td><strong>🎲 Skenario</strong></td><td>Simulasi perubahan nilai: geser slider untuk melihat dampak jika nilai kontribusi suatu SH berubah</td></tr>
+      <tr><td><strong>📅 Waktu (Timeline)</strong></td><td>Visualisasi aktivitas per fase dan per stakeholder</td></tr>
+      <tr><td><strong>✅ Valid (Validasi)</strong></td><td>Daftar error & peringatan lengkap beserta saran perbaikan, dan checklist 8 kaidah kolaborasi</td></tr>
+    </table>
+
+    <h3>Menggunakan Skenario</h3>
+    <p>Tab Skenario memungkinkan simulasi "what-if" tanpa mengubah data asli. Geser slider multiplier suatu SH (misal 0.5× hingga 2×) untuk melihat bagaimana perubahan nilai kontribusi mempengaruhi rasio dan net value semua pihak.</p>
+  </div>
+
+  <!-- S9 -->
+  <div class="section" id="s9">
+    <div class="section-num">Bagian 9</div>
+    <h2>Berbagi dengan Orang Lain</h2>
+
+    <h3>Skenario 1: Berbagi Aplikasi Saja</h3>
+    <div class="flow">
+      <div class="flow-step">Kirim file .html</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Penerima buka di browser</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Langsung bisa digunakan</div>
+    </div>
+    <p>Penerima akan mendapat kanvas kosong dan bisa membuat skema baru dari awal.</p>
+
+    <h3>Skenario 2: Berbagi Skema yang Sudah Dibuat</h3>
+    <div class="flow">
+      <div class="flow-step">Buat skema</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Klik 💾 Simpan → unduh .json</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Kirim .html + .json</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">Penerima buka .html → klik 📂 Buka → pilih .json</div>
+    </div>
+
+    <h3>Skenario 3: Hosting Online (untuk akses dari mana saja)</h3>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Daftar GitHub Pages (gratis)</h4><p>Buat akun di github.com, buat repository baru.</p></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Upload file HTML</h4><p>Rename file menjadi <span class="mono">index.html</span>, lalu upload ke repository.</p></div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Aktifkan GitHub Pages</h4><p>Settings → Pages → Branch: main → Save. URL otomatis terbuat: <span class="mono">username.github.io/namarepository</span></p></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Bagikan URL</h4><p>Siapapun bisa mengakses aplikasi dari URL tersebut tanpa mengunduh apapun.</p></div></div>
+    </div>
+
+    <div class="box box-warn">
+      <strong>⚠ Catatan privasi hosting online</strong>
+      Jika di-hosting secara publik, siapa saja yang punya URL bisa mengakses aplikasi. Data proyek (.json) tidak terunggah secara otomatis — hanya file aplikasinya. Proyek pengguna tetap tersimpan di komputer lokal masing-masing.
+    </div>
+  </div>
+
+  <!-- S10 -->
+  <div class="section" id="s10">
+    <div class="section-num">Bagian 10</div>
+    <h2>Pengembangan Lanjutan</h2>
+
+    <h3>Struktur Teknologi</h3>
+    <table>
+      <tr><th>Komponen</th><th>Teknologi</th><th>Keterangan</th></tr>
+      <tr><td>Bahasa</td><td>HTML5, CSS3, Vanilla JavaScript</td><td>Tidak ada framework — murni standar web</td></tr>
+      <tr><td>Visualisasi kanvas</td><td>SVG + CSS Transform</td><td>Node = div absolut, Aliran = SVG path dengan marker</td></tr>
+      <tr><td>Export gambar</td><td>html2canvas v1.4.1 (CDN)</td><td>Diambil dari cdnjs.cloudflare.com</td></tr>
+      <tr><td>Font</td><td>Google Fonts (Syne, Mulish, JetBrains Mono)</td><td>Diambil dari fonts.googleapis.com</td></tr>
+      <tr><td>Penyimpanan</td><td>File .json lokal + localStorage backup</td><td>Tidak ada server database</td></tr>
+    </table>
+
+    <div class="box box-warn">
+      <strong>⚠ Ketergantungan internet saat pertama kali</strong>
+      Aplikasi memerlukan koneksi internet saat pertama dibuka untuk mengunduh font dari Google Fonts dan library html2canvas. Setelah dibuka sekali, browser biasanya meng-cache-nya. Untuk penggunaan 100% offline, font dan library bisa di-embed langsung ke dalam file HTML.
+    </div>
+
+    <h3>Cara Menambah Template Baru</h3>
+    <p>Buka file HTML dengan text editor (Notepad++, VS Code, dsb.). Cari bagian <span class="mono">const TEMPLATES = [</span>. Tambahkan objek template baru dengan struktur berikut:</p>
+    <div class="code-block">
+{
+  <span class="kw">scale</span>: <span class="str">'kecil'</span>,          <span class="cm">// kecil | menengah | besar | sangat_besar</span>
+  <span class="kw">scaleLabel</span>: <span class="str">'🟢 Kecil'</span>,
+  <span class="kw">nameID</span>: <span class="str">'Nama Template (ID)'</span>,
+  <span class="kw">nameEN</span>: <span class="str">'Template Name (EN)'</span>,
+  <span class="kw">descID</span>: <span class="str">'Deskripsi singkat'</span>,
+  <span class="kw">icon</span>: <span class="str">'🏘'</span>,
+  <span class="kw">nodes</span>: [
+    { name: <span class="str">'Nama SH'</span>, type: <span class="str">'pemerintah'</span>, role: <span class="str">'shp'</span>,
+      resources: <span class="str">'...'</span>, interest: <span class="str">'...'</span>,
+      valRp: 50000000, phases: {0:true, 1:true, 2:false}, icon: <span class="str">'🏛'</span> },
+    <span class="cm">// tambah node lain...</span>
+  ],
+  <span class="kw">flows</span>: [
+    { fromId: 0, toId: 1, label: <span class="str">'Dana hibah'</span>, type: <span class="str">'financial'</span>,
+      dir: <span class="str">'one'</span>, valRp: 30000000, phases: {0:true, 1:true, 2:false} },
+    <span class="cm">// tambah aliran lain...</span>
+  ]
+},
+    </div>
+
+    <div class="box box-info">
+      <strong>ℹ Tipe node yang valid</strong>
+      <span class="mono">pemerintah</span> · <span class="mono">swasta</span> · <span class="mono">ngo</span> · <span class="mono">akademisi</span> · <span class="mono">komunitas</span> · <span class="mono">publik</span>
+    </div>
+    <div class="box box-info">
+      <strong>ℹ Tipe aliran yang valid</strong>
+      <span class="mono">financial</span> · <span class="mono">tangible</span> · <span class="mono">intangible</span> · <span class="mono">public</span> · <span class="mono">eksternalitas</span>
+    </div>
+    <div class="box box-info">
+      <strong>ℹ Index node (fromId / toId)</strong>
+      Index dimulai dari 0 sesuai urutan array nodes. Node pertama = 0, kedua = 1, dst.
+    </div>
+
+    <h3>Cara Memodifikasi Warna Tema</h3>
+    <p>Semua warna didefinisikan sebagai CSS custom properties di bagian <span class="mono">:root { ... }</span> di awal file. Ubah nilai variabel seperti <span class="mono">--accent</span>, <span class="mono">--blue</span>, <span class="mono">--bg</span>, dsb. untuk mengubah tampilan keseluruhan aplikasi.</p>
+  </div>
+
+  <!-- S11 -->
+  <div class="section" id="s11">
+    <div class="section-num">Bagian 11</div>
+    <h2>Troubleshooting</h2>
+
+    <table>
+      <tr><th>Masalah</th><th>Kemungkinan Penyebab</th><th>Solusi</th></tr>
+      <tr>
+        <td>Aplikasi tidak terbuka</td>
+        <td>Browser terlalu lama atau file rusak</td>
+        <td>Gunakan Chrome/Firefox versi terbaru. Pastikan file tidak terpotong saat transfer.</td>
+      </tr>
+      <tr>
+        <td>Font tidak tampil (muncul font generik)</td>
+        <td>Tidak ada koneksi internet saat pertama buka</td>
+        <td>Buka sekali dengan koneksi internet agar font ter-cache, atau hubungi pengembang untuk versi offline penuh.</td>
+      </tr>
+      <tr>
+        <td>Export gambar terpotong</td>
+        <td>Bug yang sudah diperbaiki di v2.0</td>
+        <td>Pastikan menggunakan file versi terbaru. Gambar akan mencakup seluruh node.</td>
+      </tr>
+      <tr>
+        <td>Icon picker tidak terbuka</td>
+        <td>Bug yang sudah diperbaiki di v2.0</td>
+        <td>Pastikan menggunakan file versi terbaru.</td>
+      </tr>
+      <tr>
+        <td>File .json tidak bisa dibuka</td>
+        <td>File dibuat oleh versi berbeda atau rusak</td>
+        <td>Coba buka dengan versi terbaru. File harus valid JSON dan mengandung field <span class="mono">nodes</span>.</td>
+      </tr>
+      <tr>
+        <td>Error validasi rasio terus muncul</td>
+        <td>Stakeholder mengeluarkan nilai lebih besar dari yang diterima</td>
+        <td>Tambahkan aliran balik yang realistis (pajak, retribusi, return investasi). Lihat Bagian 5.</td>
+      </tr>
+      <tr>
+        <td>Proporsi tidak 100%</td>
+        <td>Floating point akumulasi</td>
+        <td>Di v2.0 sudah diperbaiki otomatis dengan toleransi ±0.01%. Jika masih muncul, cek nilai Rp yang diisi.</td>
+      </tr>
+      <tr>
+        <td>Performa lambat dengan banyak node</td>
+        <td>Browser keterbatasan memori</td>
+        <td>Gunakan Chrome, tutup tab lain. Pada jaringan >15 node, sembunyikan minimap jika perlu.</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- S12 -->
+  <div class="section" id="s12">
+    <div class="section-num">Bagian 12</div>
+    <h2>Daftar Fitur Lengkap</h2>
+
+    <h3>Kanvas & Navigasi</h3>
+    <ul class="std">
+      <li>Pan & zoom kanvas (scroll, drag, tombol +/−)</li>
+      <li>Fit View otomatis dengan padding</li>
+      <li>Minimap real-time di pojok kanan bawah</li>
+      <li>Grid dot sebagai panduan visual</li>
+      <li>Keyboard shortcut (V, C, F, Del, Esc, Space)</li>
+    </ul>
+
+    <h3>Manajemen Data</h3>
+    <ul class="std">
+      <li>Tambah, edit, hapus stakeholder (SHP & SHF)</li>
+      <li>Tambah, edit, hapus aliran sumber daya (5 tipe)</li>
+      <li>Grup/layer stakeholder dengan label</li>
+      <li>12 template siap pakai (4 skala kompleksitas)</li>
+      <li>Dukungan bilingual Indonesia / Inggris</li>
+      <li>Fase kolaborasi (Pra / Operasi / Pasca)</li>
+    </ul>
+
+    <h3>Analisis</h3>
+    <ul class="std">
+      <li>Net value per stakeholder (masuk, keluar, eksternalitas)</li>
+      <li>Rasio keseimbangan nilai otomatis</li>
+      <li>Simulasi skenario dengan slider multiplier</li>
+      <li>Proporsi kontribusi otomatis (% dari total)</li>
+      <li>Chart pie & bar distribusi nilai</li>
+      <li>Timeline aktivitas per fase</li>
+    </ul>
+
+    <h3>Validasi</h3>
+    <ul class="std">
+      <li>8 kaidah kolaborasi dicek otomatis</li>
+      <li>Badge status (Valid / Peringatan / Error) di kanvas</li>
+      <li>Saran perbaikan per error</li>
+      <li>Pengecualian rasio untuk entitas Pemerintah & Publik</li>
+    </ul>
+
+    <h3>Ekspor & Penyimpanan</h3>
+    <ul class="std">
+      <li>Simpan proyek sebagai JSON (editable)</li>
+      <li>Buka proyek dari file JSON</li>
+      <li>Export PNG resolusi 2× (full canvas, tidak terpotong)</li>
+      <li>Export JPEG kualitas 92%</li>
+      <li>Export laporan HTML ringkas</li>
+      <li>Indikator status simpan di header</li>
+    </ul>
+
+    <h3>Kustomisasi Visual</h3>
+    <ul class="std">
+      <li>Icon picker dengan 5 kategori emoji (200+ ikon)</li>
+      <li>Upload gambar lokal sebagai icon (PNG/JPG/SVG/WebP/GIF)</li>
+      <li>6 tipe warna node sesuai sektor stakeholder</li>
+      <li>Tema gelap (dark mode) bawaan</li>
+      <li>Logo kustom di header</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <p>Skema Kolaborasi v2.0 &nbsp;|&nbsp; Dikembangkan oleh Frans Waas &nbsp;|&nbsp; 2026</p>
+    <p style="margin-top:4px">Petunjuk Teknis ini dapat digandakan untuk keperluan pelatihan dan penelitian.</p>
+  </div>
+
+</div>
+</body>
+</html>
