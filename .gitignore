@@ -1,0 +1,27 @@
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Temp
+*.tmp
+*.bak
+*.swp
+*~
+
+# User data (proyek pengguna — tidak perlu di-commit)
+*.json
+!package.json
