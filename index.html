@@ -480,31 +480,57 @@ body{font-family:'Mulish',sans-serif;background:var(--bg);color:var(--text);font
         <input class="form-input" id="sh_interest" placeholder="Keuntungan, kinerja..." />
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Nilai Kontribusi (Rp)</label>
-        <div class="curr-wrap"><span class="curr-pre">Rp</span><input class="form-input curr-input mono" id="sh_valRp" type="number" placeholder="0" oninput="updateSHProportionPreview()" /></div>
+    <!-- Nilai Kontribusi per Fase -->
+    <div class="form-group" style="margin-bottom:8px">
+      <label class="form-label" style="margin-bottom:6px">Nilai Kontribusi &amp; Fase Aktif</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+        <!-- Pra -->
+        <div style="background:var(--s3);border-radius:8px;border:1px solid var(--border);padding:8px">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+            <input type="checkbox" id="sh_p0" checked onchange="updatePhaseInputState(0)" style="cursor:pointer" />
+            <span style="font-size:11px;font-weight:700;color:var(--blue)">PRA</span>
+          </div>
+          <div class="curr-wrap" style="opacity:1" id="sh_v0_wrap">
+            <span class="curr-pre" style="font-size:10px">Rp</span>
+            <input class="form-input curr-input mono" id="sh_v0" type="number" placeholder="0" style="font-size:12px;padding:4px 6px 4px 28px" oninput="updateSHProportionPreview()" />
+          </div>
+        </div>
+        <!-- Operasi -->
+        <div style="background:var(--s3);border-radius:8px;border:1px solid var(--accent)44;padding:8px">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+            <input type="checkbox" id="sh_p1" checked onchange="updatePhaseInputState(1)" style="cursor:pointer" />
+            <span style="font-size:11px;font-weight:700;color:var(--accent)">OPERASI</span>
+          </div>
+          <div class="curr-wrap" id="sh_v1_wrap">
+            <span class="curr-pre" style="font-size:10px">Rp</span>
+            <input class="form-input curr-input mono" id="sh_v1" type="number" placeholder="0" style="font-size:12px;padding:4px 6px 4px 28px" oninput="updateSHProportionPreview()" />
+          </div>
+        </div>
+        <!-- Pasca -->
+        <div style="background:var(--s3);border-radius:8px;border:1px solid var(--border);padding:8px">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+            <input type="checkbox" id="sh_p2" onchange="updatePhaseInputState(2)" style="cursor:pointer" />
+            <span style="font-size:11px;font-weight:700;color:var(--text2)">PASCA</span>
+          </div>
+          <div class="curr-wrap" id="sh_v2_wrap" style="opacity:0.4">
+            <span class="curr-pre" style="font-size:10px">Rp</span>
+            <input class="form-input curr-input mono" id="sh_v2" type="number" placeholder="0" style="font-size:12px;padding:4px 6px 4px 28px" oninput="updateSHProportionPreview()" disabled />
+          </div>
+        </div>
       </div>
+      <div style="font-size:10px;color:var(--text3);margin-top:5px">Centang fase untuk mengaktifkan · Nilai bisa berbeda tiap fase</div>
     </div>
     <!-- Auto-calculated proportion preview -->
     <div id="sh_pct_preview" style="display:none;margin-bottom:8px;padding:10px 12px;background:var(--s3);border-radius:8px;border:1px solid var(--border2)">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <span style="font-size:11px;font-weight:700;color:var(--text2)">PROPORSI KONTRIBUSI (AUTO)</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text2)">PROPORSI KONTRIBUSI (AUTO) · <span id="sh_pct_phase_label" style="color:var(--accent)">Fase aktif</span></span>
         <span id="sh_pct_this" style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:800;color:var(--accent)">—</span>
       </div>
       <div style="height:6px;background:var(--s2);border-radius:3px;overflow:hidden;margin-bottom:6px">
         <div id="sh_pct_bar" style="height:100%;border-radius:3px;background:var(--accent);transition:width .4s;width:0%"></div>
       </div>
-      <div style="font-size:10px;color:var(--text3)" id="sh_pct_context">Nilai ini dibanding total semua SH</div>
+      <div style="font-size:10px;color:var(--text3)" id="sh_pct_context">Nilai ini dibanding total semua SH di fase yang sama</div>
       <div id="sh_other_total" style="display:none;margin-top:6px;padding-top:6px;border-top:1px solid var(--border)"></div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Fase Aktif</label>
-      <div style="display:flex;gap:6px">
-        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" id="sh_p0" checked /> Pra</label>
-        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" id="sh_p1" checked /> Operasi</label>
-        <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer"><input type="checkbox" id="sh_p2" /> Pasca</label>
-      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('modalSH')">Batal</button>
@@ -718,39 +744,77 @@ function fmtPct(pct) {
   return pct.toFixed(2) + '%';
 }
 
+// Helper: get node's contribution value for a specific phase
+// Supports both new format (valRpPhases) and legacy (valRp)
+function getNodeValRp(nd, phase) {
+  if (nd.valRpPhases && typeof nd.valRpPhases === 'object') {
+    return nd.valRpPhases[phase] || 0;
+  }
+  // Legacy fallback: single valRp applies to all phases
+  return nd.valRp || 0;
+}
+
+// Get node's "representative" valRp — used for proportions, charts, etc.
+// Returns value for the currently active canvas phase
+function nodeValRp(nd) {
+  return getNodeValRp(nd, S.phase);
+}
+
 // ═══════════════════════════════════════════════════════════
 // LIVE PROPORTION PREVIEW IN MODALS
 // ═══════════════════════════════════════════════════════════
-function updateSHProportionPreview() {
-  const inp = document.getElementById('sh_valRp');
-  const preview = document.getElementById('sh_pct_preview');
-  const val = parseFloat(inp.value) || 0;
-  if (val <= 0) { preview.style.display='none'; return; }
+function updatePhaseInputState(phaseIdx) {
+  const checked = document.getElementById('sh_p'+phaseIdx).checked;
+  const wrap = document.getElementById('sh_v'+phaseIdx+'_wrap');
+  const inp  = document.getElementById('sh_v'+phaseIdx);
+  if (wrap) wrap.style.opacity = checked ? '1' : '0.4';
+  if (inp)  inp.disabled = !checked;
+  updateSHProportionPreview();
+}
 
-  // Calc total of all nodes (excluding current editing) + this value
+function updateSHProportionPreview() {
+  const preview = document.getElementById('sh_pct_preview');
+  // Determine which phase inputs are visible & get current value for active canvas phase
+  const ph = S.phase; // current canvas phase (0/1/2)
+  const phChecked = document.getElementById('sh_p'+ph) ? document.getElementById('sh_p'+ph).checked : false;
+  const val = phChecked ? (parseFloat(document.getElementById('sh_v'+ph)?.value) || 0) : 0;
+
+  // Find any non-zero phase value to show preview
+  const anyVal = [0,1,2].reduce((max, i) => {
+    const v = parseFloat(document.getElementById('sh_v'+i)?.value) || 0;
+    return Math.max(max, v);
+  }, 0);
+  if (anyVal <= 0) { preview.style.display='none'; return; }
+
+  // Phase labels
+  const phaseNames = ['Pra-Kolaborasi','Operasi','Pasca'];
+  const phLabel = document.getElementById('sh_pct_phase_label');
+  if (phLabel) phLabel.textContent = phaseNames[ph];
+
+  // Calc total of all nodes in same phase (excluding current editing)
   const othersTotal = S.nodes
     .filter(n => editingNode ? n.id !== editingNode : true)
-    .reduce((s,n) => s + (n.valRp||0), 0);
+    .reduce((s,n) => s + (getNodeValRp(n, ph)||0), 0);
   const newTotal = othersTotal + val;
   const pct = newTotal > 0 ? (val / newTotal * 100) : 0;
 
   preview.style.display = 'block';
-  document.getElementById('sh_pct_this').textContent = fmtPct(pct);
+  document.getElementById('sh_pct_this').textContent = phChecked ? fmtPct(pct) : '(fase tidak aktif)';
   document.getElementById('sh_pct_bar').style.width = Math.min(pct,100) + '%';
-  const shCount = S.nodes.filter(n=>editingNode?n.id!==editingNode:true).filter(n=>n.valRp>0).length + 1;
+  const shCount = S.nodes.filter(n=>editingNode?n.id!==editingNode:true).filter(n=>getNodeValRp(n,ph)>0).length + (val>0?1:0);
   document.getElementById('sh_pct_context').textContent =
-    `${fmtRp(val,true)} dari total ${fmtRp(newTotal,true)} (${shCount} SH)`;
+    `${fmtRp(val,true)} dari total ${fmtRp(newTotal,true)} (${shCount} SH) · Fase: ${phaseNames[ph]}`;
 
-  // Show breakdown of all SH values  
+  // Show breakdown of all SH values in this phase
   const otherEl = document.getElementById('sh_other_total');
   if (otherEl) {
-    const others = S.nodes.filter(n=>editingNode?n.id!==editingNode:true).filter(n=>n.valRp>0);
+    const others = S.nodes.filter(n=>editingNode?n.id!==editingNode:true).filter(n=>getNodeValRp(n,ph)>0);
     if (others.length) {
       otherEl.style.display='block';
       otherEl.innerHTML = others.map(n=>`
         <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text2);margin-bottom:2px">
           <span>${n.name.slice(0,18)}</span>
-          <span style="font-family:'JetBrains Mono',monospace">${fmtRp(n.valRp,true)} (${fmtPct(n.valPct||0)})</span>
+          <span style="font-family:'JetBrains Mono',monospace">${fmtRp(getNodeValRp(n,ph),true)}</span>
         </div>`).join('');
     } else {
       otherEl.style.display='none';
@@ -854,7 +918,8 @@ function renderNodes() {
   visible.forEach(nd => {
     const col = nc(nd.type);
     const mult = S.scenarioMult[nd.id] || 1;
-    const autoPct = nd.valPct > 0 ? ` · ${fmtPct(nd.valPct)}` : ''; const dispVal = nd.valRp > 0 ? fmtRp(nd.valRp*(S.scenarioMult[nd.id]||1),true)+autoPct : '';
+    const phaseVal = getNodeValRp(nd, S.phase);
+    const autoPct = nd.valPct > 0 ? ` · ${fmtPct(nd.valPct)}` : ''; const dispVal = phaseVal > 0 ? fmtRp(phaseVal*(S.scenarioMult[nd.id]||1),true)+autoPct : '';
     const el = document.createElement('div');
     const hasActiveFlow = S.flows.some(f =>
       (f.fromId===nd.id||f.toId===nd.id) && (!f.phases||f.phases[S.phase])
@@ -1343,16 +1408,28 @@ function renderValuasi() {
 
   // proportional sharing
   const totalRp = S.nodes.reduce((s,n)=>s+(n.valRp||0),0);
+  const phaseNames = ['Pra-Kolaborasi','Operasi','Pasca'];
+  const hasPhaseData = S.nodes.some(n=>n.valRpPhases);
   if (totalRp>0) {
-    h+=`<div class="sec-title" style="margin-top:12px">📊 Proporsi Kontribusi (Auto)</div>
+    h+=`<div class="sec-title" style="margin-top:12px">📊 Proporsi Kontribusi · <span style="color:var(--accent);font-size:10px">${phaseNames[S.phase]}</span></div>
     <div style="padding:8px 10px;background:rgba(0,212,170,.08);border:1px solid rgba(0,212,170,.2);border-radius:8px;margin-bottom:10px;font-size:10px;color:var(--accent2)">
-      💡 Proporsi dihitung otomatis dari nilai Rp masing-masing SH
+      💡 Proporsi dihitung otomatis dari nilai Rp masing-masing SH di fase aktif
     </div>`;
     const maxRp = Math.max(...S.nodes.map(n=>n.valRp||0));
     S.nodes.forEach(nd=>{
-      if (!nd.valRp) return;
+      if (!nd.valRp && !getNodeValRp(nd, S.phase)) return;
       const col=nc(nd.type);
       const pct=nd.valPct||0;
+      // Build per-phase mini indicator if has phase data
+      let phaseRow = '';
+      if (hasPhaseData) {
+        const v0=getNodeValRp(nd,0), v1=getNodeValRp(nd,1), v2=getNodeValRp(nd,2);
+        phaseRow = `<div style="display:flex;gap:4px;margin-top:4px">
+          <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:${S.phase===0?'var(--blue)44':'var(--s3)'};color:${S.phase===0?'var(--blue)':'var(--text3)'}">Pra: ${v0>0?fmtRp(v0,true):'—'}</span>
+          <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:${S.phase===1?'var(--accent)44':'var(--s3)'};color:${S.phase===1?'var(--accent)':'var(--text3)'}">Op: ${v1>0?fmtRp(v1,true):'—'}</span>
+          <span style="font-size:9px;padding:1px 5px;border-radius:3px;background:${S.phase===2?'var(--orange)44':'var(--s3)'};color:${S.phase===2?'var(--orange2)':'var(--text3)'}">Pasca: ${v2>0?fmtRp(v2,true):'—'}</span>
+        </div>`;
+      }
       h+=`<div class="bar-row" style="margin-bottom:10px">
         <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:11px;margin-bottom:3px">
           <span style="font-weight:700">${nd.name.slice(0,22)}</span>
@@ -1360,13 +1437,14 @@ function renderValuasi() {
         </div>
         <div class="bar-track" style="height:10px"><div class="bar-fill" style="width:${pct}%;background:${col.border}"></div></div>
         <div style="display:flex;justify-content:space-between;margin-top:2px">
-          <span style="font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace">${fmtRp(nd.valRp)}</span>
+          <span style="font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace">${fmtRp(getNodeValRp(nd,S.phase))}</span>
           <span style="font-size:10px;color:var(--text3)">${nd.role.toUpperCase()}</span>
         </div>
+        ${phaseRow}
       </div>`;
     });
     h+=`<div style="border-top:1px solid var(--border);padding-top:8px;display:flex;justify-content:space-between;font-size:13px;font-weight:800">
-      <span>TOTAL</span>
+      <span>TOTAL · ${phaseNames[S.phase]}</span>
       <span style="font-family:'JetBrains Mono',monospace;color:var(--orange2)">${fmtRp(totalRp)}</span>
     </div>`;
   }
@@ -1500,8 +1578,8 @@ function drawPieChart() {
   const canvas = document.getElementById('pieChart');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const nodes = S.nodes.filter(n=>n.valRp>0);
-  const total = nodes.reduce((s,n)=>s+n.valRp,0);
+  const nodes = S.nodes.filter(n=>getNodeValRp(n,S.phase)>0);
+  const total = nodes.reduce((s,n)=>s+getNodeValRp(n,S.phase),0);
   ctx.clearRect(0,0,200,200);
   if (!total) return;
 
@@ -1512,7 +1590,8 @@ function drawPieChart() {
 
   nodes.forEach(nd=>{
     const col = nc(nd.type);
-    const slice = nd.valRp/total*Math.PI*2;
+    const ndVal = getNodeValRp(nd, S.phase);
+    const slice = ndVal/total*Math.PI*2;
     const midAngle = angle + slice/2;
 
     // Draw slice
@@ -1536,15 +1615,15 @@ function drawPieChart() {
 
     // Legend row
     if (legend) {
-      const pct = nd.valPct||0;
+      const pct = total>0?(ndVal/total*100).toFixed(1):0;
       const row = document.createElement('div');
       row.style.cssText = 'display:flex;align-items:center;gap:7px;padding:5px 7px;background:var(--s2);border-radius:6px;border:1px solid var(--border)';
       row.innerHTML = `
         <div style="width:10px;height:10px;border-radius:50%;background:${col.border};flex-shrink:0"></div>
         <div style="flex:1;font-size:11px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${nd.name}</div>
         <div style="text-align:right;flex-shrink:0">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:800;color:${col.border}">${fmtPct(pct)}</div>
-          <div style="font-size:9px;color:var(--text2);font-family:'JetBrains Mono',monospace">${fmtRp(nd.valRp,true)}</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:800;color:${col.border}">${fmtPct(parseFloat(pct))}</div>
+          <div style="font-size:9px;color:var(--text2);font-family:'JetBrains Mono',monospace">${fmtRp(ndVal,true)}</div>
         </div>`;
       legend.appendChild(row);
     }
@@ -1555,7 +1634,7 @@ function renderScenario() {
   let h=`<div style="font-size:11px;color:var(--text2);margin-bottom:10px">Geser slider untuk simulasi perubahan nilai kontribusi setiap SH dan lihat dampak pada net value.</div>`;
   const nets = computeNet();
   S.nodes.forEach(nd=>{
-    const hasFlowVal = S.flows.some(f=>(f.fromId===nd.id||f.toId===nd.id)&&f.valRp>0); if (!nd.valRp&&!hasFlowVal) return;
+    const hasFlowVal = S.flows.some(f=>(f.fromId===nd.id||f.toId===nd.id)&&f.valRp>0); if (!getNodeValRp(nd,S.phase)&&!hasFlowVal) return;
     const mult = S.scenarioMult[nd.id]||1;
     const col=nc(nd.type);
     const netData = nets.find(n=>n.nd.id===nd.id);
@@ -2134,6 +2213,8 @@ function autoLayout(type) {
 function setPhase(p) {
   S.phase=p;
   document.querySelectorAll('.phase-tab').forEach(t=>t.classList.toggle('active',parseInt(t.dataset.phase)===p));
+  // Recalc proportions so valRp reflects new phase
+  recalcProportions();
   renderAll();
 }
 
@@ -2152,14 +2233,22 @@ function openEditSH(id) {
   document.getElementById('sh_role').value=nd.role;
   document.getElementById('sh_resources').value=nd.resources||'';
   document.getElementById('sh_interest').value=nd.interest||'';
-  document.getElementById('sh_valRp').value=nd.valRp||'';
-  document.getElementById('sh_p0').checked=nd.phases?.[0]!==false;
-  document.getElementById('sh_p1').checked=nd.phases?.[1]!==false;
-  document.getElementById('sh_p2').checked=!!nd.phases?.[2];
   populateGroupSelect(nd.group);
   document.getElementById('modalSHTitle').textContent='✏️ Edit Stakeholder';
-  // Trigger proportion preview if value exists
-  if(nd.valRp>0) setTimeout(updateSHProportionPreview,50);
+  // Fill per-phase values and checkboxes
+  [0,1,2].forEach(i => {
+    const chk = document.getElementById('sh_p'+i);
+    const inp = document.getElementById('sh_v'+i);
+    const isActive = nd.phases ? nd.phases[i]!==false && (i<2 ? nd.phases[i]!==false : !!nd.phases[i]) : i < 2;
+    // For phase 2 (Pasca) default is unchecked unless explicitly set
+    const phActive = i === 2 ? !!nd.phases?.[2] : nd.phases?.[i] !== false;
+    if (chk) chk.checked = phActive;
+    if (inp) inp.value = getNodeValRp(nd, i) || '';
+    updatePhaseInputState(i);
+  });
+  // Trigger proportion preview
+  const hasAny = [0,1,2].some(i => getNodeValRp(nd,i) > 0);
+  if(hasAny) setTimeout(updateSHProportionPreview,50);
   else document.getElementById('sh_pct_preview').style.display='none';
   openModal('modalSH');
 }
@@ -2168,6 +2257,8 @@ function openEditSH(id) {
 // AUTO-PROPORTION CALCULATION
 // ═══════════════════════════════════════════════════════════
 function recalcProportions() {
+  // Update each node's valRp to reflect current canvas phase (for legacy code compat)
+  S.nodes.forEach(n => { n.valRp = getNodeValRp(n, S.phase); });
   const total = S.nodes.reduce((s,n)=>s+(n.valRp||0),0);
   if (total === 0) { S.nodes.forEach(n => n.valPct = 0); return; }
   let assigned = 0;
@@ -2196,14 +2287,19 @@ function recalcFlowProportions() {
 }
 
 function populateSHModal() {
-  ['sh_name','sh_resources','sh_interest','sh_valRp'].forEach(i=>document.getElementById(i).value='');
+  ['sh_name','sh_resources','sh_interest'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('sh_icon').value='';
   setIconPickerPreview('🏛');
   document.getElementById('sh_type').value='pemerintah';
   document.getElementById('sh_role').value='shp';
-  document.getElementById('sh_p0').checked=true;
-  document.getElementById('sh_p1').checked=true;
-  document.getElementById('sh_p2').checked=false;
+  // Reset fase checkboxes and value inputs
+  [0,1,2].forEach(i => {
+    const chk = document.getElementById('sh_p'+i);
+    const inp = document.getElementById('sh_v'+i);
+    if (chk) { chk.checked = i < 2; }
+    if (inp) { inp.value = ''; }
+    updatePhaseInputState(i);
+  });
   document.getElementById('sh_pct_preview').style.display='none';
   populateGroupSelect(null);
   document.getElementById('modalSHTitle').textContent='➕ Tambah Stakeholder';
@@ -2222,7 +2318,14 @@ function populateGroupSelect(selected) {
 function saveSH() {
   const name=document.getElementById('sh_name').value.trim();
   if(!name){showToast('Nama wajib diisi','err');return;}
-  const valRp = parseFloat(document.getElementById('sh_valRp').value)||0;
+  const p0 = document.getElementById('sh_p0').checked;
+  const p1 = document.getElementById('sh_p1').checked;
+  const p2 = document.getElementById('sh_p2').checked;
+  const v0 = p0 ? (parseFloat(document.getElementById('sh_v0').value)||0) : 0;
+  const v1 = p1 ? (parseFloat(document.getElementById('sh_v1').value)||0) : 0;
+  const v2 = p2 ? (parseFloat(document.getElementById('sh_v2').value)||0) : 0;
+  // Representative valRp = value of current canvas phase (for legacy code compatibility)
+  const valRp = getNodeValRp({valRpPhases:{0:v0,1:v1,2:v2}}, S.phase);
 
   // Auto-calculate proportion after saving
   const data={
@@ -2233,11 +2336,12 @@ function saveSH() {
     resources:document.getElementById('sh_resources').value.trim(),
     interest:document.getElementById('sh_interest').value.trim(),
     valRp,
+    valRpPhases:{0:v0, 1:v1, 2:v2},
     valPct: 0, // will be recalculated below
     phases:{
-      0:document.getElementById('sh_p0').checked,
-      1:document.getElementById('sh_p1').checked,
-      2:document.getElementById('sh_p2').checked
+      0:p0,
+      1:p1,
+      2:p2
     }
   };
   if(editingNode) {
@@ -2501,6 +2605,17 @@ function openProject() {
         Object.assign(S, d);
         S.selectedNode=null; S.selectedFlow=null;
         S.connectSrc=null;
+        // Migrate legacy nodes: if valRp exists but no valRpPhases, spread across phases
+        S.nodes.forEach(nd => {
+          if (!nd.valRpPhases && nd.valRp) {
+            const ph = nd.phases || {0:true,1:true,2:false};
+            nd.valRpPhases = {
+              0: ph[0] ? nd.valRp : 0,
+              1: ph[1] !== false ? nd.valRp : 0,
+              2: ph[2] ? nd.valRp : 0
+            };
+          }
+        });
         // Recalculate nextId from actual max ID to prevent duplicates
         const allIds = [...(S.nodes||[]).map(n=>n.id), ...(S.flows||[]).map(f=>f.id)].filter(Boolean);
         S.nextId = allIds.length ? Math.max(...allIds) + 1 : 1;
@@ -3279,8 +3394,18 @@ function loadTemplate(i) {
   S.zoom=1; S.panX=0; S.panY=0;
 
   // Push nodes first with temp positions
+  // Auto-migrate: if node has valRp but no valRpPhases, spread valRp across active phases
   tpl.nodes.forEach((nd,idx)=>{
-    S.nodes.push({...nd, id:S.nextId++, x:0, y:0});
+    const node = {...nd, id:S.nextId++, x:0, y:0};
+    if (!node.valRpPhases && node.valRp) {
+      const ph = node.phases || {0:true,1:true,2:false};
+      node.valRpPhases = {
+        0: ph[0] ? node.valRp : 0,
+        1: ph[1] !== false ? node.valRp : 0,
+        2: ph[2] ? node.valRp : 0
+      };
+    }
+    S.nodes.push(node);
   });
   tpl.flows.forEach(fl=>{
     const from=S.nodes[fl.fromId], to=S.nodes[fl.toId];

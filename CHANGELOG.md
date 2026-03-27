@@ -6,6 +6,24 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.0.0/).
 
 ---
 
+## [2.1.0] - 2026-03-27
+
+### Ditambahkan
+- **Nilai kontribusi per fase** — setiap stakeholder kini dapat memiliki nilai kontribusi (Rp) yang berbeda untuk masing-masing fase: Pra-Kolaborasi, Operasi, dan Pasca
+- Form SH diubah: input nilai kontribusi kini berupa 3 kolom terintegrasi bersama checkbox fase aktif
+- Jika fase di-uncheck, input nilainya otomatis nonaktif (disabled + redup) untuk mencegah salah input
+- Preview proporsi kini menampilkan label fase aktif kanvas yang sedang dilihat
+- Panel Nilai & Proporsi menampilkan mini-badge ke-3 fase sekaligus untuk perbandingan cepat antar fase
+- Chart & Pie Chart otomatis membaca nilai sesuai fase yang aktif di kanvas
+- Ganti fase Pra → Operasi → Pasca: semua proporsi dan chart ikut diperbarui otomatis
+- Helper `getNodeValRp(node, phase)` — fungsi internal untuk membaca nilai per fase
+- **Backward compatible** — file JSON lama yang hanya menyimpan `valRp` tunggal tetap terbaca; nilai lama otomatis disalin ke fase-fase yang aktif saat file dibuka atau template dimuat
+
+### Diperbaiki
+- `recalcProportions()` kini memperbarui `valRp` (kompatibilitas legacy) setiap kali fase kanvas berganti
+
+---
+
 ## [2.0.0] - 2026-03-21
 
 ### Ditambahkan
